@@ -76,8 +76,13 @@ module Anakin
 
     #process image: {action: 'process_image' user_id: 1, category: 'matching', scenario: <SCENARIO IMAGE DATA OR DATA EXTRACTED> }
     def process_image(data)
-      
+      data_output = {}
+      servers = Anakin::DataIndex.find(use_id: data[:user_id], category: data[:category]).all.to_a.map(&:servers)
+      servers.each do |server|
+        data_output[server.name.to_sym] = data
+      end
+      data_output
     end
-
+    
   end
 end

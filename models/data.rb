@@ -7,6 +7,7 @@ module Anakin
     attribute :amount
     attribute :offset
     index :index_id
+    index :category
     reference :server, 'Anakin::ServerPool'
 
   end

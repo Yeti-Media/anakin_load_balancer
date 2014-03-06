@@ -1,0 +1,5 @@
+envs:
+  limits:
+    matching: 8
+    comparison: 8
+    ocr: 1

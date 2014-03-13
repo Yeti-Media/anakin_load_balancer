@@ -81,13 +81,13 @@ module Anakin
       ServerPool.find(category: 'comparison').each do |server|
         data_output[server] = {action: 'comparison', user_id: data[:user_id], scenario_id: data[:scenario_id]}
       end
+      data_output
     end
 
     def ocr
-      data_output = {}
       servers = ServerPool.find(category: 'ocr').to_a
-      server = servers[rand(servers.length -1)]
-      data_output[server] = {action: 'ocr', scenario_id: data[:scenario_id]}
+      server = servers[rand(servers.size - 1)]
+      {server => {action: 'ocr', scenario_id: data[:scenario_id]} }
     end
     
   end

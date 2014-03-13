@@ -77,7 +77,7 @@ describe "Load Balancer" do
 
   end
 
-  describe "when process image" do
+  describe "when matching" do
     before do
       body = {action: 'add_server', server: {name: 'anakin1', host: '127.0.0.1', port: 6001, category: 'matching'}}
       add_server(body)
@@ -99,4 +99,44 @@ describe "Load Balancer" do
     end
 
   end
+
+  describe "when ocr" do
+    before do
+      body = {action: 'add_server', server: {name: 'anakin1', host: '127.0.0.1', port: 6001, category: 'ocr'}}
+      add_server(body)
+    end
+
+    after do
+      delete_server('anakin1')
+    end
+
+    it "should receive two responses" do
+      @body =  {action: 'ocr', scenario_id: 1234 }
+      response = perform_request(@body)
+      Yajl::Parser.parse(response.body).count.should == 1
+    end
+
+  end
+
+  describe "when ocr" do
+    before do
+      body = {action: 'add_server', server: {name: 'anakin1', host: '127.0.0.1', port: 6001, category: 'comparison'}}
+      add_server(body)
+      body = {action: 'add_server', server: {name: 'anakin2', host: '127.0.0.1', port: 6002, category: 'matching'}}
+      add_server(body)
+    end
+
+    after do
+      delete_server('anakin1')
+      delete_server('anakin2')
+    end
+
+    it "should receive two responses" do
+      @body =  {action: 'comparison', scenario_id: 1234}
+      response = perform_request(@body)
+      Yajl::Parser.parse(response.body).count.should == 1
+    end
+
+  end
+
 end

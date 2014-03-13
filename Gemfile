@@ -1,9 +1,19 @@
 # A sample Gemfile
 source "https://rubygems.org"
 
-gem "em-proxy", git: 'git@github.com:Yeti-Media/em-proxy.git'
 gem "redic"
 gem "ohm" , "2.0.0.rc2"
-gem "http_parser"
-gem 'yajl-ruby'
+gem "http_parser.rb", require: 'http/parser'
+gem 'yajl-ruby', require: 'yajl'
 gem 'settingslogic'
+gem "eventmachine_httpserver", require: 'evma_httpserver'
+gem "em-http-request", require: 'em-http'
+
+group :test do 
+  gem 'rspec'
+  gem 'posix-spawn'  
+  gem 'faraday'
+  gem 'database_cleaner'
+  gem 'thin'
+  gem 'rack'
+end

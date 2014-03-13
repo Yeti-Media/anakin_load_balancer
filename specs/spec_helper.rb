@@ -1,0 +1,8 @@
+require_relative '../init'
+require 'faraday'
+require 'yajl'
+require 'posix/spawn'
+require_relative './helper'
+require 'rspec'
+require 'thin'
+require 'rack'

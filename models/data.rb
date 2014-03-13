@@ -1,14 +1,17 @@
-module Anakin
-  class DataIndex < Ohm::Model
-    
-    attribute :category
-    attribute :user_id
-    attribute :index_id
-    attribute :amount
-    attribute :offset
-    index :index_id
-    index :category
-    reference :server, 'Anakin::ServerPool'
+class DataIndex < Ohm::Model
 
+  attribute :category
+  attribute :user_id
+  attribute :trainer_id
+  attribute :amount
+  attribute :offset
+  index :trainer_id
+  index :category
+  index :user_id
+  reference :server_pool, :ServerPool
+
+
+  def self.count
+    all.to_a.size
   end
 end

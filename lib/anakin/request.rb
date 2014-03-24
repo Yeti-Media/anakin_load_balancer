@@ -23,7 +23,6 @@ module Anakin
     private
 
     def parse
-      parser = Http::Parser.new
       json_parser = Yajl::Parser.new(:symbolize_keys => true)
       self.data = json_parser.parse(raw_data)
     end
@@ -31,13 +30,20 @@ module Anakin
     def process
       actions = %w(add_server add_indexes add_index 
                    update_index matching comparison ocr face_detection 
-                   face_recognition remove_server)
+                   face_recognition remove_server recover)
       if actions.include? data[:action]
         return send(data[:action])
       else
         return nil
       end
     end    
+
+    #recover server: {action: 'recover', server:{name: 'anakin1'}}
+    def recover
+      server = ServerPool.find(data[:server]).first
+      {server => {action: 'add_indexes', indexes: server.data_indexes.ids }}
+    end
+
 
     #add a server: {action: 'add_server', server: {name: 'anakin1', host: '192.168.1.1', port: 5679, category: 'comparison'}}
     def add_server

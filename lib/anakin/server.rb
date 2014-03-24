@@ -19,7 +19,7 @@ module Anakin
       if data
         multi = EventMachine::MultiRequest.new
         data.each do |server, d|
-          multi.add(server.name, EventMachine::HttpRequest.new(server.url).post(body: d))
+          multi.add(server.name, EventMachine::HttpRequest.new(server.url).post(body: Yajl::Encoder.encode(d)))
         end
         multi.callback  do
           resp.status = 200

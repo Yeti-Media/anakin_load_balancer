@@ -17,3 +17,5 @@ group :test do
   gem 'thin'
   gem 'rack'
 end
+
+gem "capistrano", group: :development

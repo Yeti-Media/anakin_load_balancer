@@ -8,6 +8,7 @@ gem 'yajl-ruby', require: 'yajl'
 gem 'settingslogic'
 gem "eventmachine_httpserver", require: 'evma_httpserver'
 gem "em-http-request", require: 'em-http'
+gem "pidfile"
 
 group :test do 
   gem 'rspec'
@@ -18,4 +19,7 @@ group :test do
   gem 'rack'
 end
 
-gem "capistrano", group: :development
+group :development do
+  gem "capistrano"
+  gem 'capistrano-rbenv', '~> 2.0'
+end

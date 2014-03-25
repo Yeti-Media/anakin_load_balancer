@@ -1,4 +1,7 @@
+#!/usr/bin/env ruby
+
 require './init'
+
 
 class LoadBalancer  < EventMachine::Connection
   include EventMachine::HttpServer
@@ -31,6 +34,7 @@ end
 
 
 EventMachine::run {
+  PidFile.new(:piddir => '/var/lock', :pidfile => "anakin_load_balancer.pid")
   EventMachine::start_server("0.0.0.0", 8080, LoadBalancer)
   puts "Listening... on port 8080"
 }

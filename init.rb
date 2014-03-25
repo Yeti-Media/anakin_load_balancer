@@ -3,7 +3,7 @@ require 'bundler'
 Bundler.require
 
 Dir['./config/**/*.rb'].each do |file|
-  require file unless file.include?('deploy.rb')
+  require file unless file.include?('deploy')
 end
 
 Dir['./models/**/*.rb'].each do |file|

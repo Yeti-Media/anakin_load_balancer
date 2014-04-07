@@ -65,7 +65,10 @@ namespace :deploy do
 
   after :restart, :clear_cache do
     on roles(:app), in: :groups, limit: 3, wait: 10 do
-      execute :kill, "-9 $(cat /var/lock/anakin_load_balancer.pid)"
+      within release_path do
+        execute :ruby, "load_balancer.rb -k -P /var/lock/anakin_load_balancer.pid"
+        execute :ruby, "load_balancer.rb -d -P /var/lock/anakin_load_balancer.pid"
+      end
     end
   end
 

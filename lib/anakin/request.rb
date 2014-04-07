@@ -2,7 +2,7 @@ module Anakin
   class Request
 
     
-    attr_accessor :servers, :raw_data, :data , :conn
+    attr_accessor :servers, :raw_data, :data , :conn, :error
 
     def initialize(servers, data)
       self.servers = servers
@@ -12,12 +12,21 @@ module Anakin
 
     #process image: {action: 'matching' user_id: 1, category: 'matching', scenario: <SCENARIO IMAGE DATA OR DATA EXTRACTED> }
     #add indexes: {action: 'add_indexes', user_id: 1, indexes:[1,2,100,..]}
-    #update a index: {action: 'update_index', index:{id: 100}}
+    #update a index: {action: 'update_indexes', index:{id: 100}}
     #add a server: {action: 'add_server', server: {name: 'anakin1', host: '192.168.1.1', port: 5679, category: 'comparison'}}
     #remove a server: {action: 'remove_server', server: {name: 'anakin1'}}
     def process!
-      parse
-      process
+      begin
+        parse
+        process
+      rescue Yajl::ParseError => e
+        self.error = "invalid json text"
+        nil
+      end
+    end
+
+    def valid?
+      self.error.empty?
     end
 
     private
@@ -41,7 +50,7 @@ module Anakin
     #recover server: {action: 'recover', server:{name: 'anakin1'}}
     def recover
       server = ServerPool.find(data[:server]).first
-      {server => {action: 'add_indexes', indexes: server.data_indexes.ids }}
+      {server => {action: 'add_indexes', indexes: server.data_indexes.map{|d| d.trainer_id.to_i} }}
     end
 
 
@@ -74,10 +83,10 @@ module Anakin
     #process image: {action: 'matching' user_id: 1, category: 'matching', scenario_id: 1234 }
     def matching
       data_output = {}
-      data_indexes = DataIndex.find(user_id: data[:user_id], category: data[:category]).to_a
+      data_indexes = DataIndex.find(trainer_id: data[:indexes], category: data[:category]).to_a
       data_indexes.each do |data_index|
-        data_output[data_index.server_pool] ||= {indexes: [], action: 'process_image' , scenario_id: data[:scenario_id]}
-        data_output[data_index.server_pool][:indexes].push(data_index.trainer_id)
+        data_output[data_index.server_pool] ||= {indexes: [], action: 'matching' , scenario: data[:scenario]}
+        data_output[data_index.server_pool][:indexes].push(data_index.trainer_id.to_i)
       end
       data_output
     end
@@ -85,7 +94,7 @@ module Anakin
     def comparison
       data_output = {}
       ServerPool.find(category: 'comparison').each do |server|
-        data_output[server] = {action: 'comparison', user_id: data[:user_id], scenario_id: data[:scenario_id]}
+        data_output[server] = {action: 'comparison', user_id: data[:user_id], scenario: data[:scenario_id]}
       end
       data_output
     end

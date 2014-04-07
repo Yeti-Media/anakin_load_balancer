@@ -9,6 +9,7 @@ gem 'settingslogic'
 gem "eventmachine_httpserver", require: 'evma_httpserver'
 gem "em-http-request", require: 'em-http'
 gem "pidfile"
+gem 'dante'
 
 group :test do 
   gem 'rspec'

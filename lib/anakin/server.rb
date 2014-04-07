@@ -19,7 +19,9 @@ module Anakin
       if data
         multi = EventMachine::MultiRequest.new
         data.each do |server, d|
-          multi.add(server.name, EventMachine::HttpRequest.new(server.url).post(body: Yajl::Encoder.encode(d)))
+          multi.add(server.name, EventMachine::HttpRequest.new(server.url).
+                                      post(body: Yajl::Encoder.encode(d), header:{'connection' => 'close'},
+                                           timeout: 120))
         end
         multi.callback  do
           resp.status = 200
@@ -29,6 +31,8 @@ module Anakin
             content << conn.response
           end
           resp.content = "[#{content.join(',')}]"
+          puts "RESPONSES"
+          puts resp.content
           resp.send_response 
         end
       else

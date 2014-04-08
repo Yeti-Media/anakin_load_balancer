@@ -26,7 +26,7 @@ module Anakin
     end
 
     def valid?
-      self.error.empty?
+      self.error.nil?
     end
 
     private

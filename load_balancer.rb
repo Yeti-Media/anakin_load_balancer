@@ -30,7 +30,8 @@ class LoadBalancer  < EventMachine::Connection
       if @request.valid?
         servers.send_data(@data, resp)
       else
-        resp.content = '"#{@request.error}"'
+        resp.status = 422
+        resp.content = '{"error":"#{@request.error}"}'
         puts "RESPONSES"
         puts resp.content
         resp.send_response

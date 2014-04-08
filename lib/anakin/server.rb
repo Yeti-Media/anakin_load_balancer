@@ -28,7 +28,15 @@ module Anakin
           resp.content_type 'application/json'
           content = []
           multi.responses[:callback].each do |server, conn|
-            content << conn.response
+            begin 
+              body = conn.response.match(/\{(.*)\}|\[(.*)\]/)
+              single_response = Yajl::Parser.parse(body[0])
+              if single_response.is_a?(Hash) || single_response.is_a?(Array)
+                content << body[0]
+              end
+            rescue Yajl::ParseError => e
+              content << e.message
+            end
           end
           resp.content = "[#{content.join(',')}]"
           puts "RESPONSES"

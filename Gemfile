@@ -8,8 +8,8 @@ gem 'yajl-ruby', require: 'yajl'
 gem 'settingslogic'
 gem "eventmachine_httpserver", require: 'evma_httpserver'
 gem "em-http-request", require: 'em-http'
-gem "pidfile"
 gem 'dante'
+gem 'rollbar'
 
 group :test do 
   gem 'rspec'

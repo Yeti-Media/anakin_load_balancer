@@ -53,7 +53,7 @@ namespace :deploy do
 
   desc 'Restart application'
   task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
+    on roles(:app, :db), in: :sequence, wait: 5 do
       # Your restart mechanism here, for example:
       within release_path do
         execute "bundle" , "install --without test development"

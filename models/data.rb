@@ -9,6 +9,7 @@ class DataIndex < Ohm::Model
   index :category
   index :user_id
   reference :server_pool, :ServerPool
+  unique :trainer_id
 
 
   def self.count

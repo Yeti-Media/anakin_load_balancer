@@ -15,25 +15,39 @@ class LoadBalancer  < EventMachine::Connection
   def process_http_request
     resp = EventMachine::DelegatedHttpResponse.new( self )
     operation = proc do
-      @request = Anakin::Request.new(servers, @http_post_content)
-      puts "SERVERS"
-      puts self.servers.inspect
-      puts "REQUEST"
-      puts @request.inspect
-      @data = @request.process!
-      puts "DATA"
-      puts @data.inspect
+      begin
+        @request = Anakin::Request.new(servers, @http_post_content)
+        puts "SERVERS"
+        puts self.servers.inspect
+        puts "REQUEST"
+        puts @request.inspect
+        @data = @request.process!
+        puts "DATA"
+        puts @data.inspect
+      rescue Exception => e
+        Rollbar.report_exception(e)
+        resp.status = 500
+        resp.content = '{"error":"Internal Server Error"}'
+        resp.send_response
+      end 
     end
 
   # Callback block to execute once the request is fulfilled
-    callback = proc do 
-      if @request.valid?
-        servers.send_data(@data, resp)
-      else
-        resp.status = 422
-        resp.content = '{"error":"#{@request.error}"}'
-        puts "RESPONSES"
-        puts resp.content
+    callback = proc do
+      begin 
+        if @request.valid?
+          servers.send_data(@data, resp)
+        else
+          resp.status = 422
+          resp.content = '{"error":"#{@request.error}"}'
+          puts "RESPONSES"
+          puts resp.content
+          resp.send_response
+        end
+      rescue Exception => e
+        Rollbar.report_exception(e)
+        resp.status = 500
+        resp.content = '{"error":"Internal Server Error"}'
         resp.send_response
       end
     end

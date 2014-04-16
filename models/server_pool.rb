@@ -29,8 +29,8 @@ class ServerPool < Ohm::Model
     data_output
   end
 
-  #update a index: {action: 'update_index', index_id: 100}}
-  def self.update_index!(data)
+  #update a index: {action: 'update_indexes', index_id: 100}}
+  def self.update_indexes!(data)
     data_index = DataIndex.find(trainer_id: data[:indexes].first).first
     {data_index.server_pool => data}
   end

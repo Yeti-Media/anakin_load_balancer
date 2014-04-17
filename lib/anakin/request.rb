@@ -38,7 +38,7 @@ module Anakin
 
     def process
       actions = %w(add_server add_indexes add_index 
-                   update_indexes matching comparison ocr face_detection 
+                   update_index matching comparison ocr face_detection 
                    face_recognition remove_server recover)
       if actions.include? data[:action]
         return send(data[:action])
@@ -76,7 +76,7 @@ module Anakin
     end
 
     #update a index: {action: 'update_indexes', index:{id: 100}}
-    def update_indexes
+    def update_index
       ServerPool.update_indexes!(data)
     end
 

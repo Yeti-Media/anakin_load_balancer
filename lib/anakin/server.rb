@@ -36,6 +36,10 @@ module Anakin
               end
             rescue Yajl::ParseError => e
               content << e.message
+              Rollbar.report_exception(e)
+            rescue NoMethodError => e
+              Rollbar.report_exception(e)
+              content << ""
             end
           end
           resp.content = "[#{content.join(',')}]"

@@ -36,9 +36,9 @@ module Anakin
               end
             rescue Yajl::ParseError => e
               content << e.message
-              Rollbar.report_exception(e)
+              Rollbar.report_exception(e, {server: server, data: data})
             rescue NoMethodError => e
-              Rollbar.report_exception(e)
+              Rollbar.report_exception(e, {server: server, data: data})
               content << ""
             end
           end

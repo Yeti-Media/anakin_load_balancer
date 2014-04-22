@@ -25,7 +25,7 @@ class LoadBalancer  < EventMachine::Connection
         puts "DATA"
         puts @data.inspect
       rescue Exception => e
-        Rollbar.report_exception(e)
+        Rollbar.report_exception(e, {data: @http_post_content})
         resp.status = 500
         resp.content = '{"error":"Internal Server Error"}'
         resp.send_response
@@ -45,7 +45,7 @@ class LoadBalancer  < EventMachine::Connection
           resp.send_response
         end
       rescue Exception => e
-        Rollbar.report_exception(e)
+        Rollbar.report_exception(e, {data: @data})
         resp.status = 500
         resp.content = '{"error":"Internal Server Error"}'
         resp.send_response
